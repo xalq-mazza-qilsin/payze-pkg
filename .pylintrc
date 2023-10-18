@@ -1,0 +1,4 @@
+[MASTER]
+disable=deprecated-decorator,
+    no-member,
+    import-error,
