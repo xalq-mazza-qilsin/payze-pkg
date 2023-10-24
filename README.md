@@ -70,17 +70,15 @@ account2card = PayzeAccount2CardAPI(
     success_redirect_gateway="your-success-redirect-gateway"
 )
 
-resp_obj = account2card.verify_card(
+resp_obj = account2card_client.verify_card(
     params=VerifyCardDataParam(
         number="8600000000000007",
-        card_holder="Muhammadali-Akbarov",
+        card_holder="xxx",
         expire_date="04/26",
-        transaction_id="trx-id"
+        transaction_id="trx-id" # your can get transaction-id from add card method
     )
 )
-
 print(resp_obj)
-
 ```
 
 ## Account2Card
@@ -100,12 +98,12 @@ account2card = PayzeAccount2CardAPI(
     success_redirect_gateway="your-success-redirect-gateway"
 )
 
-resp_obj = account2card.account2card(
+resp_obj = account2card_client.account2card(
     params=RefundParam(
         source="Wallet",
-        amount=1000,
+        amount=1,
         currency="UZS",
-        language="ENG",
+        language="EN",
         token="card-token"
     )
 )
@@ -129,11 +127,10 @@ account2card = PayzeAccount2CardAPI(
     success_redirect_gateway="your-success-redirect-gateway"
 )
 
-resp_obj = account2card.status_check(
+resp_obj = account2card_client.status_check(
     params=StatusCheckParam(
-        check_id="check-id"
+        check_id="check-id" # you can use transaction-id
     )
 )
-
 print(resp_obj)
 ```

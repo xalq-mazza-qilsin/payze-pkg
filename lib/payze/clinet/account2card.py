@@ -10,21 +10,16 @@ from payze.types.request import RequestStatusCheck
 from payze.types.request import RequestAddCardCreate
 from payze.types.request import RequestVerifyCardData
 
-from payze.types.response import Data
-from payze.types.response import Status
-from payze.types.response import Payment
 from payze.types.response import ResponseRefund
 from payze.types.response import ResponseAddCard
 from payze.types.response import ResponseVerifyCard
+from payze.types.response import ResponseStatusCheck
 
 from payze.types.params import RefundParam
 from payze.types.params import StatusCheckParam
 from payze.types.params import AddCardDataParam
+from payze.utils.decorator import error_catcher
 from payze.types.params import VerifyCardDataParam
-from payze.utils.cases import to_snake_case
-from payze.utils.decorator import send_request_decorator
-
-from payze.exceptions.service import NotImplementException
 
 
 class PayzeAccount2CardAPI:
@@ -53,9 +48,8 @@ class PayzeAccount2CardAPI:
             "Content-Type": "application/x-www-form-urlencoded"
         }
 
-    @send_request_decorator
+    @error_catcher
     def __send_request(self, method, data=None, json_data=None, url=None, params=None): # noqa
-
         if url is None:
             url = self.url
             self.headers["Content-Type"] = "application/json"
@@ -79,6 +73,7 @@ class PayzeAccount2CardAPI:
             amount=params.amount,
             currency=params.currency,
             language=params.language,
+            idempotency_key=params.idempotency_key,
             wallet_payment=WalletPayment(
                 tokenize_card=params.tokenize_card
             ),
@@ -91,19 +86,10 @@ class PayzeAccount2CardAPI:
 
         resp = self.__send_request(
             method="PUT",
-            json_data=json_data
+            json_data=json_data,
         )
 
-        return ResponseAddCard(
-            data=Data(
-                payment=Payment(
-                    **to_snake_case(d=resp.get("data").get("payment"))
-                )
-            ),
-            status=Status(
-                **to_snake_case(d=resp.get("status"))
-            )
-        )
+        return ResponseAddCard(**resp)
 
     def verify_card(self, params: VerifyCardDataParam) -> ResponseVerifyCard:
         """
@@ -122,9 +108,7 @@ class PayzeAccount2CardAPI:
             data=json_data
         )
 
-        return ResponseVerifyCard(
-            success=resp.get("success")
-        )
+        return ResponseVerifyCard(**resp)
 
     def account2card(self, params: RefundParam):
         """
@@ -148,18 +132,9 @@ class PayzeAccount2CardAPI:
             json_data=json_data
         )
 
-        return ResponseRefund(
-            data=Data(
-                payment=Payment(
-                    **to_snake_case(d=resp.get("data").get("payment"))
-                )
-            ),
-            status=Status(
-                **to_snake_case(d=resp.get("status"))
-            )
-        )
+        return ResponseRefund(**resp)
 
-    def status_check(self, params: StatusCheckParam) -> str:
+    def status_check(self, params: StatusCheckParam) -> ResponseStatusCheck:
         """
         check transition status.
         """
@@ -174,11 +149,4 @@ class PayzeAccount2CardAPI:
             params=params
         )
 
-        # TODO: need implement with dataclasses in future
-
-        if resp.get("data").get("value")[0].get("status") and resp.get("data").get("count") == 1: # noqa
-            return resp.get("data").get("value")[0].get("status")
-
-        raise NotImplementException(
-            message="status_check is not implemented with dataclasses"
-        )
+        return ResponseStatusCheck(**resp)

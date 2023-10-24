@@ -1,6 +1,7 @@
 """
 payze param types for using payze client methods.
 """
+from uuid import uuid4
 from dataclasses import dataclass
 
 
@@ -14,7 +15,7 @@ class AddCardDataParam:
     currency: str
     language: str
     tokenize_card: bool
-    idempotency_key: str = None
+    idempotency_key: str = str(uuid4())
 
     def to_dict(self):
         """

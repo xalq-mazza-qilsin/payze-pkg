@@ -10,7 +10,7 @@ from payze.exceptions.service import PayzeServiceException
 logger = logging.getLogger(__name__)
 
 
-def send_request_decorator(func):
+def error_catcher(func):
     """
     send request decorator
     for catching exceptions.

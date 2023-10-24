@@ -7,7 +7,7 @@ from setuptools import find_packages
 
 setup(
     name='payze-pkg',
-    version='0.3',
+    version='0.4',
     license='MIT',
     author="paytechuz",
     author_email='paytechuz@gmail.com',
@@ -17,6 +17,7 @@ setup(
     keywords='account2card payze-uz payze-pkg payze-python payze-github',
     install_requires=[
         'requests==2.*',
+        'pydantic==2.4.2',
         'dataclasses==0.*',
       ],
 )
