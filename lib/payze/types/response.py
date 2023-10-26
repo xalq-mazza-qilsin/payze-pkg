@@ -1,296 +1,206 @@
 """
-response types.
+the payze responses.
 """
+from typing import Any
+from typing import List
 from typing import Optional
 
-from dataclasses import dataclass
+from pydantic import Field
+from pydantic import BaseModel
 
 
-@dataclass
-class CardPayment:
+class CardPayment(BaseModel):
     """
-    CardPayment represents.
+    the card payment response.
     """
     token: str
     preauthorize: bool
-    google_pay: bool
-    apple_pay: bool
-    card_mask: bool
-    card_expiration: Optional[str]
-    merchant_id: Optional[str]
-    terminal_id: Optional[str]
     rrn: Optional[str]
-    processing_vendor_id: Optional[str]
-    processing_vendor: Optional[str]
-
-    def to_dict(self):
-        """
-        dict representation.
-        """
-        return {
-            "preauthorize": self.preauthorize,
-            "googlePay": self.google_pay,
-            "applePay": self.apple_pay,
-            "cardMask": self.card_mask,
-            "card_expiration": self.card_expiration,
-            "merchantId": self.merchant_id,
-            "terminalId": self.terminal_id,
-            "token": self.token,
-            "rrn": self.rrn,
-            "processingVendorId": self.processing_vendor_id,
-            "processingVendor": self.processing_vendor
-        }
+    google_pay: bool = Field(alias="googlePay")
+    apple_pay: bool = Field(alias="applePay")
+    card_mask: Optional[str] = Field(alias="cardMask")
+    card_expiration: Optional[str] = Field(alias="cardExpiration")
+    merchant_id: Optional[str] = Field(alias="merchantId")
+    terminal_id: Optional[str] = Field(alias="terminalId")
+    processing_vendor_id: Optional[str] = Field(alias="processingVendorId")
+    processing_vendor: Optional[str] = Field(alias="processingVendor")
 
 
-@dataclass
-class WalletPayment:
+class WalletPayment(BaseModel):
     """
-    WalletPayment represents.
+    the wallet payment response.
     """
     flow: str
     token: str
-    tokenize_card: bool
-
-    def to_dict(self):
-        """
-        Convert WalletPayment data class to a dictionary.
-        """
-        return {
-            "flow": self.flow,
-            "token": self.token,
-            "tokenizeCard": self.tokenize_card
-        }
+    tokenize_card: Optional[bool] = Field(alias="tokenizeCard")
 
 
-@dataclass
-class Hooks:
+class Hooks(BaseModel):
     """
-    Hooks represents.
+    the hooks response.
     """
-    webhook_gateway: str
-    success_redirect_gateway: str
-    error_redirect_gateway: str
-
-    def to_dict(self):
-        """
-        Convert Hooks data class to a dictionary.
-        """
-        return {
-            "webhookGateway": self.webhook_gateway,
-            "successRedirectGateway": self.success_redirect_gateway,
-            "errorRedirectGateway": self.error_redirect_gateway
-        }
+    webhook_gateway: str = Field(alias="webhookGateway")
+    success_redirect_gateway: str = Field(alias="successRedirectGateway")
+    error_redirect_gateway: str = Field(alias="errorRedirectGateway")
 
 
-@dataclass
-class Payment:
+class Payer(BaseModel):
     """
-    Payment represents.
+    the payer response.
+    """
+    ip: Optional[str]
+    email: Optional[str]
+    phone: Optional[str]
+    country: Optional[str]
+    taxId: Optional[str] = Field(alias="taxId")
+    fullName: Optional[str] = Field(alias="fullName")
+    personalId: Optional[str] = Field(alias="personalId")
+
+
+class Payment(BaseModel):
+    """
+    the payment response
     """
     id: int
-    requester_id: int
-    transaction_id: str
     type: str
     source: str
     amount: float
     currency: str
     status: str
-    card_payment: CardPayment
-    wallet_payment: WalletPayment
     hooks: Hooks
     language: str
-    idempotency_key: str
     metadata: Optional[dict]
-    share_link: Optional[str]
     network: Optional[str]
-    blocked_amount: Optional[float]
-    captured_amount: Optional[float]
-    refunded_amount: Optional[float]
-    reversed_amount: Optional[float]
-    settled_balance_amount: Optional[float]
-    cross_currency_settlement: Optional[dict]
     settled: Optional[dict]
-    reject_reason: Optional[str]
-    fee: Optional[dict]
+    fee: Optional[Any]
     channel: Optional[dict]
-    payer: Optional[dict]
+    payer: Optional[Payer]
     receipt: Optional[dict]
-    sand_box: bool
-    captured_date: Optional[str]
-    blocked_date: Optional[str]
-    settled_date: Optional[str]
-    refunded_date: Optional[str]
-    reverse_date: Optional[str]
-    rejected_date: Optional[str]
-    created_date: str
-    payment_url: Optional[str]
-    version: int
-    last_modified_date: str
 
-    def to_dict(self):
-        """
-        Convert Payment data class to a dictionary.
-        """
-        return {
-            "id": self.id,
-            "requesterId": self.requester_id,
-            "transactionId": self.transaction_id,
-            "type": self.type,
-            "source": self.source,
-            "amount": self.amount,
-            "currency": self.currency,
-            "status": self.status,
-            "cardPayment": self.card_payment.to_dict(),
-            "walletPayment": self.wallet_payment.to_dict(),
-            "hooks": self.hooks.to_dict(),
-            "language": self.language,
-            "idempotencyKey": self.idempotency_key,
-            "metadata": self.metadata,
-            "shareLink": self.share_link,
-            "network": self.network,
-            "blockedAmount": self.blocked_amount,
-            "capturedAmount": self.captured_amount,
-            "refundedAmount": self.refunded_amount,
-            "reversedAmount": self.reversed_amount,
-            "settledBalanceAmount": self.settled_balance_amount,
-            "crossCurrencySettlement": self.cross_currency_settlement,
-            "settled": self.settled,
-            "rejectReason": self.reject_reason,
-            "fee": self.fee,
-            "channel": self.channel,
-            "payer": self.payer,
-            "receipt": self.receipt,
-            "sandBox": self.sand_box,
-            "capturedDate": self.captured_date,
-            "blockedDate": self.blocked_date,
-            "settledDate": self.settled_date,
-            "refundedDate": self.refunded_date,
-            "reverseDate": self.reverse_date,
-            "rejectedDate": self.rejected_date,
-            "createdDate": self.created_date,
-            "paymentUrl": self.payment_url,
-            "version": self.version,
-            "lastModifiedDate": self.last_modified_date
-        }
+    payment_url: Optional[str] = Field(
+        alias="paymentUrl"
+    )
+    rejected_date: Optional[str] = Field(
+        alias="rejectedDate"
+    )
+    reverse_date: Optional[str] = Field(
+        alias="reverseDate"
+    )
+    refunded_date: Optional[str] = Field(
+        alias="refundedDate"
+    )
+    settled_date: Optional[str] = Field(
+        alias="settledDate"
+    )
+    blocked_date: Optional[str] = Field(
+        alias="blockedDate"
+    )
+    captured_date: Optional[str] = Field(
+        alias="capturedDate"
+    )
+    reject_reason: Optional[str] = Field(
+        alias="rejectReason"
+    )
+    requester_id: int = Field(
+        alias="requesterId"
+    )
+    transaction_id: str = Field(
+        alias="transactionId"
+    )
+    sand_box: bool = Field(
+        alias="sandBox"
+    )
+    created_date: str = Field(
+        alias="createdDate"
+    )
+    idempotency_key: Optional[str] = Field(
+        alias="idempotencyKey"
+    )
+    share_link: Optional[str] = Field(
+        alias="shareLink"
+    )
+    card_payment: CardPayment = Field(
+        alias="cardPayment"
+    )
+    wallet_payment: WalletPayment = Field(
+        alias="walletPayment"
+    )
+    blocked_amount: Optional[float] = Field(
+        alias="blockedAmount"
+    )
+    captured_amount: Optional[float] = Field(
+        alias="capturedAmount"
+    )
+    refunded_amount: Optional[float] = Field(
+        alias="refundedAmount"
+    )
+    reversed_amount: Optional[float] = Field(
+        alias="reversedAmount"
+    )
+    settled_balance_amount: Optional[float] = Field(
+        alias="settledBalanceAmount"
+    )
+    cross_currency_settlement: Optional[dict] = Field(
+        alias="crossCurrencySettlement"
+    )
 
 
-@dataclass
-class Data:
+class Data(BaseModel):
     """
-    Data Payment represents.
-    """
-    payment: Payment
-
-    def to_dict(self):
-        """
-        Convert Data data class to a dictionary.
-        """
-        return {
-            "payment": self.payment.to_dict()
-        }
-
-
-@dataclass
-class ValueData:
-    """
-    Data Payment represents.
+    the payment data response
     """
     payment: Payment
 
-    def to_dict(self):
-        """
-        Convert Data data class to a dictionary.
-        """
-        return {
-            "payment": self.payment.to_dict()
-        }
 
-
-@dataclass
-class Status:
+class ValueData(Payment):
     """
-    Status Payment represents.
+    the value data response
+    """
+
+
+class Status(BaseModel):
+    """
+    the status response
     """
     message: Optional[str]
     errors: Optional[dict]
     type: Optional[str]
 
-    def to_dict(self):
-        """
-        Convert Status data class to a dictionary.
-        """
-        return {
-            "message": self.message,
-            "errors": self.errors,
-            "type": self.type
-        }
 
-
-@dataclass
-class ResponseAddCard:
+class ResponseAddCard(BaseModel):
     """
-    Add card response representation.
+    the add card response.
     """
     data: Data
     status: Status
 
-    def to_dict(self):
-        """
-        Convert ResponseAddCard data class to a dictionary.
-        """
-        return {
-            "data": self.data.to_dict(),
-            "status": self.status.to_dict()
-        }
 
-
-@dataclass
-class ResponseVerifyCard:
+class ResponseVerifyCard(BaseModel):
     """
-    Verify card response representation.
+    the response verify card.
     """
     success: bool
 
-    def to_dict(self):
-        """
-        Convert ResponseVerifyCard data class to a dictionary.
-        """
-        return {
-            "success": self.success
-        }
 
-
-@dataclass
-class ResponseRefund:
+class ResponseRefund(BaseModel):
     """
-    ResponseRefund response representation.
+    the response refund.
     """
     data: Data
     status: Status
 
-    def to_dict(self):
-        """
-        Convert ResponseAddCard data class to a dictionary.
-        """
-        return {
-            "data": self.data.to_dict(),
-            "status": self.status.to_dict()
-        }
+
+class PaymentHistory(BaseModel):
+    """
+    the payment history response.
+    """
+    value: List[ValueData]
+    count: Optional[int]
 
 
-@dataclass
-class ResponseStatusCheck:
+class ResponseStatusCheck(BaseModel):
     """
-    ResponseStatusCheck response representation.
+    the response status check.
     """
-    value: Data
     status: Status
-
-    def to_dict(self):
-        """
-        Convert ResponseStatucCheck data class to a dictionary.
-        """
-        return {
-            "data": self.data.to_dict(),
-            "status": self.value.to_dict()
-        }
+    data: PaymentHistory

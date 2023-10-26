@@ -26,4 +26,9 @@ def error_catcher(func):
             logger.error(message)
             raise PayzeServiceException(message) from exc
 
+        except Exception as exc:
+            message = f"exception: {exc} args: {args} kwargs: {kwargs} response: {response.text}" # noqa
+            logger.error(message)
+            raise PayzeServiceException(message) from exc
+
     return wrapper
