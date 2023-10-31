@@ -120,6 +120,7 @@ class PayzeAccount2CardAPI:
             language=params.language,
             currency=params.currency,
             token=params.token,
+            idempotency_key=params.idempotency_key,
             hooks=Hooks(
                 web_hook_gateway=self.web_hook_gateway,
                 success_redirect_gateway=self.success_redirect_gateway,

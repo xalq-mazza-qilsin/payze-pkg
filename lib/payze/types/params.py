@@ -62,6 +62,7 @@ class RefundParam:
     currency: str
     language: str
     token: str
+    idempotency_key: str = str(uuid4())
 
     def to_dict(self):
         """
@@ -72,6 +73,7 @@ class RefundParam:
             "amount": self.amount,
             "currency": self.currency,
             "language": self.language,
+            "idempotencyKey": self.idempotency_key
         }
 
 

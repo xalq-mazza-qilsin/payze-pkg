@@ -1,6 +1,7 @@
 """
 payze request types.
 """
+from uuid import uuid4
 from dataclasses import dataclass
 
 
@@ -51,7 +52,7 @@ class RequestAddCardCreate:
     amount: float
     currency: str
     language: str
-    idempotency_key: str = None
+    idempotency_key: str = str(uuid4())
 
     def to_dict(self):
         """
@@ -113,6 +114,7 @@ class RequestRefund:
     language: str
     token: str
     hooks: Hooks
+    idempotency_key: str = str(uuid4())
 
     def to_dict(self):
         """
@@ -124,7 +126,8 @@ class RequestRefund:
             "currency": self.currency,
             "language": self.language,
             "token": self.token,
-            "hooks": self.hooks.to_dict()
+            "hooks": self.hooks.to_dict(),
+            "idempotencyKey": self.idempotency_key
         }
 
 
