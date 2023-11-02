@@ -85,6 +85,7 @@ print(resp_obj)
 
 ```python
 from payze.types.params import RefundParam
+from payze.types.params import ExtraAttribute
 from payze.clinet.account2card import PayzeAccount2CardAPI
 
 
@@ -104,7 +105,14 @@ resp_obj = account2card_client.account2card(
         amount=1,
         currency="UZS",
         language="EN",
-        token="card-token"
+        token="card-token",
+        extra_attributes=[
+            ExtraAttribute(
+                key="order_id",
+                value="1721",
+                description="it's order"
+            ).to_dict()
+        ]
     )
 )
 print(resp_obj)

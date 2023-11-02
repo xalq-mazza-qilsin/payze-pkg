@@ -2,6 +2,7 @@
 payze request types.
 """
 from uuid import uuid4
+from typing import List
 from dataclasses import dataclass
 
 
@@ -104,6 +105,16 @@ class RequestVerifyCardData:
 
 
 @dataclass
+class ExtraAttribute:
+    """
+    extra attributes
+    """
+    key: str
+    value: str
+    description: str
+
+
+@dataclass
 class RequestRefund:
     """
     RequestRefund represents.
@@ -115,6 +126,7 @@ class RequestRefund:
     token: str
     hooks: Hooks
     idempotency_key: str = str(uuid4())
+    extra_attributes: List[ExtraAttribute] = None
 
     def to_dict(self):
         """
@@ -127,7 +139,10 @@ class RequestRefund:
             "language": self.language,
             "token": self.token,
             "hooks": self.hooks.to_dict(),
-            "idempotencyKey": self.idempotency_key
+            "idempotencyKey": self.idempotency_key,
+            "Metadata": {
+                "extraAttributes": self.extra_attributes,
+            }
         }
 
 

@@ -121,6 +121,7 @@ class PayzeAccount2CardAPI:
             currency=params.currency,
             token=params.token,
             idempotency_key=params.idempotency_key,
+            extra_attributes=params.extra_attributes,
             hooks=Hooks(
                 web_hook_gateway=self.web_hook_gateway,
                 success_redirect_gateway=self.success_redirect_gateway,
@@ -132,7 +133,7 @@ class PayzeAccount2CardAPI:
             method="PUT",
             json_data=json_data
         )
-
+    
         return ResponseRefund(**resp)
 
     def status_check(self, params: StatusCheckParam) -> ResponseStatusCheck:
