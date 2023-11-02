@@ -2,6 +2,7 @@
 payze param types for using payze client methods.
 """
 from uuid import uuid4
+from typing import List
 from dataclasses import dataclass
 
 
@@ -53,6 +54,26 @@ class VerifyCardDataParam:
 
 
 @dataclass
+class ExtraAttribute:
+    """
+    extra attributes
+    """
+    key: str
+    value: str
+    description: str
+
+    def to_dict(self):
+        """
+        dict representation.
+        """
+        return {
+            "key": self.key,
+            "value": self.value,
+            "description": self.description
+        }
+
+
+@dataclass
 class RefundParam:
     """
     RefundParam represents.
@@ -63,6 +84,7 @@ class RefundParam:
     language: str
     token: str
     idempotency_key: str = str(uuid4())
+    extra_attributes: List[ExtraAttribute] = None
 
     def to_dict(self):
         """
@@ -73,7 +95,10 @@ class RefundParam:
             "amount": self.amount,
             "currency": self.currency,
             "language": self.language,
-            "idempotencyKey": self.idempotency_key
+            "idempotencyKey": self.idempotency_key,
+            "Metadata": {
+                "extraAttributes": self.extra_attributes,
+            }
         }
 
 

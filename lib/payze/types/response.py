@@ -57,6 +57,23 @@ class Payer(BaseModel):
     personalId: Optional[str] = Field(alias="personalId")
 
 
+class ExtraAttributes(BaseModel):
+    """
+    extra attributes
+    """
+    key: str
+    value: str
+    description: str
+
+
+class Metadata(BaseModel):
+    """
+    metadata
+    """
+    extra_attributes: Optional[List[ExtraAttributes]] = \
+        Field(alias="extraAttributes")
+
+
 class Payment(BaseModel):
     """
     the payment response
@@ -69,7 +86,6 @@ class Payment(BaseModel):
     status: str
     hooks: Hooks
     language: str
-    metadata: Optional[dict]
     network: Optional[str]
     settled: Optional[dict]
     fee: Optional[Any]
@@ -143,6 +159,7 @@ class Payment(BaseModel):
     cross_currency_settlement: Optional[dict] = Field(
         alias="crossCurrencySettlement"
     )
+    metadata: Optional[Metadata] = Field(alias="metadata")
 
 
 class Data(BaseModel):
