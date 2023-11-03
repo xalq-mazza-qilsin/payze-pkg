@@ -7,6 +7,26 @@ from dataclasses import dataclass
 
 
 @dataclass
+class ExtraAttribute:
+    """
+    extra attributes
+    """
+    key: str
+    value: str
+    description: str
+
+    def to_dict(self):
+        """
+        dict representation.
+        """
+        return {
+            "key": self.key,
+            "value": self.value,
+            "description": self.description
+        }
+
+
+@dataclass
 class AddCardDataParam:
     """
     verifyCardData represents.
@@ -17,6 +37,7 @@ class AddCardDataParam:
     language: str
     tokenize_card: bool
     idempotency_key: str = str(uuid4())
+    extra_attributes: List[ExtraAttribute] = None
 
     def to_dict(self):
         """
@@ -27,7 +48,10 @@ class AddCardDataParam:
             "amount": self.amount,
             "currency": self.currency,
             "language": self.language,
-            "idempotencyKey": self.idempotency_key
+            "idempotencyKey": self.idempotency_key,
+            "Metadata": {
+                "extraAttributes": self.extra_attributes,
+            }
         }
 
 
@@ -50,26 +74,6 @@ class VerifyCardDataParam:
             "CardHolder": self.card_holder,
             "ExpirationDate": self.expire_date,
             "TransactionId": self.transaction_id
-        }
-
-
-@dataclass
-class ExtraAttribute:
-    """
-    extra attributes
-    """
-    key: str
-    value: str
-    description: str
-
-    def to_dict(self):
-        """
-        dict representation.
-        """
-        return {
-            "key": self.key,
-            "value": self.value,
-            "description": self.description
         }
 
 

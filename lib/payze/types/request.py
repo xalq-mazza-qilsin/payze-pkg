@@ -7,6 +7,16 @@ from dataclasses import dataclass
 
 
 @dataclass
+class ExtraAttribute:
+    """
+    extra attributes
+    """
+    key: str
+    value: str
+    description: str
+
+
+@dataclass
 class WalletPayment:
     """
     WalletPayment represents.
@@ -54,6 +64,7 @@ class RequestAddCardCreate:
     currency: str
     language: str
     idempotency_key: str = str(uuid4())
+    extra_attributes: List[ExtraAttribute] = None
 
     def to_dict(self):
         """
@@ -72,7 +83,10 @@ class RequestAddCardCreate:
                 "successRedirectGateway": self.hooks.success_redirect_gateway, # noqa
                 "errorRedirectGateway": self.hooks.error_redirect_gateway
             },
-            "idempotencyKey": self.idempotency_key
+            "idempotencyKey": self.idempotency_key,
+            "Metadata": {
+                "extraAttributes": self.extra_attributes,
+            }
         }
 
 
@@ -102,16 +116,6 @@ class RequestVerifyCardData:
         form representation.
         """
         return f"Number={self.number}&CardHolder={self.card_holder}&expirationDate={self.expire_date}&TransactionId={self.transaction_id}" # noqa
-
-
-@dataclass
-class ExtraAttribute:
-    """
-    extra attributes
-    """
-    key: str
-    value: str
-    description: str
 
 
 @dataclass

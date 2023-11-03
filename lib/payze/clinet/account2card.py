@@ -81,10 +81,11 @@ class PayzeAccount2CardAPI:
                 web_hook_gateway=self.web_hook_gateway,
                 success_redirect_gateway=self.success_redirect_gateway,
                 error_redirect_gateway=self.error_redirect_gateway
-            )
+            ),
+            extra_attributes=params.extra_attributes
         ).to_dict()
 
-        resp = self.__send_request(
+        resp = self._send_request(
             method="PUT",
             json_data=json_data,
         )
@@ -102,7 +103,7 @@ class PayzeAccount2CardAPI:
             transaction_id=params.transaction_id
         ).to_form()
 
-        resp = self.__send_request(
+        resp = self._send_request(
             method="POST",
             url=self.url_mobile_cards,
             data=json_data
@@ -129,7 +130,7 @@ class PayzeAccount2CardAPI:
             )
         ).to_dict()
 
-        resp = self.__send_request(
+        resp = self._send_request(
             method="PUT",
             json_data=json_data
         )
