@@ -49,7 +49,7 @@ class PayzeAccount2CardAPI:
         }
 
     @error_catcher
-    def __send_request(self, method, data=None, json_data=None, url=None, params=None): # noqa
+    def _send_request(self, method, data=None, json_data=None, url=None, params=None): # noqa
         if url is None:
             url = self.url
             self.headers["Content-Type"] = "application/json"

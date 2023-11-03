@@ -27,7 +27,7 @@ def error_catcher(func):
             message = f"payze - error: {exc} args: {args} kwargs: {kwargs}" # noqa
 
             if response is not None:
-                message += f" response: {response.text}"
+                message += f" response: {response}"
 
             logger.error(message)
             raise PayzeServiceException(message) from exc
@@ -36,7 +36,7 @@ def error_catcher(func):
             message = f"exception: {exc} args: {args} kwargs: {kwargs}" # noqa
 
             if response is not None:
-                message += f" response: {response.text}"
+                message += f" response: {response}"
 
             logger.error(message)
             raise PayzeServiceException(message) from exc
