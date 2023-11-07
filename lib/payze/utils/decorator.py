@@ -29,17 +29,18 @@ def error_catcher(func):
             logger.error(message)
 
             if response is not None:
-                message += f" response: {response.text}"
+                message += f" response: {response.__dict__}"
 
             raise PayzeServiceException(message) from exc
 
         except Exception as exc:
             message = f"exception: {exc} args: {args} kwargs: {kwargs}" # noqa
 
-            if response is not None:
-                message += f" response: {response}"
-
             logger.error(message)
+
+            if response is not None:
+                message += f" response: {response.__dict__}"
+
             raise PayzeServiceException(message) from exc
 
     return wrapper
