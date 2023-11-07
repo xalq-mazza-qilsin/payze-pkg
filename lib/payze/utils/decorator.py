@@ -26,10 +26,11 @@ def error_catcher(func):
         except requests.exceptions.RequestException as exc:
             message = f"payze - error: {exc} args: {args} kwargs: {kwargs}" # noqa
 
-            if response is not None:
-                message += f" response: {response}"
-
             logger.error(message)
+
+            if response is not None:
+                message += f" response: {response.text}"
+
             raise PayzeServiceException(message) from exc
 
         except Exception as exc:
