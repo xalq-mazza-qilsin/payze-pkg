@@ -3,47 +3,24 @@ Payze Account2Card implementation.
 """
 import requests
 
-from payze.types.request import Hooks
-from payze.types.request import WalletPayment
-from payze.types.request import RequestRefund
-from payze.types.request import RequestStatusCheck
-from payze.types.request import RequestAddCardCreate
-from payze.types.request import RequestVerifyCardData
+from payze.types import request, response, params as params_classes, atttributes
 
-from payze.types.response import ResponseRefund
-from payze.types.response import ResponseAddCard
-from payze.types.response import ResponseVerifyCard
-from payze.types.response import ResponseStatusCheck
-
-from payze.types.params import RefundParam
-from payze.types.params import StatusCheckParam
-from payze.types.params import AddCardDataParam
 from payze.utils.decorator import error_catcher
-from payze.types.params import VerifyCardDataParam
 
 
 class PayzeAccount2CardAPI:
     """
     PayzeAccount2CardAPI provides account2card API functionality.
     """
-    def __init__(
-        self,
-        url: str,
-        key: str,
-        secret: str,
-        url_mobile_cards: str,
-        web_hook_gateway: str,
-        error_redirect_gateway: str,
-        success_redirect_gateway: str,
-    ):
-        self.url = url
-        self.url_mobile_cards = url_mobile_cards
-        self.web_hook_gateway = web_hook_gateway
-        self.error_redirect_gateway = error_redirect_gateway
-        self.success_redirect_gateway = success_redirect_gateway
+    def __init__(self, attributes: atttributes.PayzeConfigOPS):
+        self.url = attributes.url
+        self.url_mobile_cards = attributes.url_mobile_cards
+        self.web_hook_gateway = attributes.web_hook_gateway
+        self.error_redirect_gateway = attributes.error_redirect_gateway
+        self.success_redirect_gateway = attributes.success_redirect_gateway
 
         self.headers: dict = {
-            "Authorization": f"{key}:{secret}",
+            "Authorization": f"{attributes.key}:{attributes.secret}",
             # for verify card
             "Content-Type": "application/x-www-form-urlencoded"
         }
@@ -64,20 +41,20 @@ class PayzeAccount2CardAPI:
             timeout=20
         )
 
-    def add_card(self, params: AddCardDataParam) -> ResponseAddCard:
+    def add_card(self, params: params_classes.AddCardDataParam) -> response.ResponseAddCard:
         """
         that's used for getting the transaction id of adding card.
         """
-        json_data = RequestAddCardCreate(
+        json_data = request.RequestAddCardCreate(
             source=params.source,
             amount=params.amount,
             currency=params.currency,
             language=params.language,
             idempotency_key=params.idempotency_key,
-            wallet_payment=WalletPayment(
+            wallet_payment=request.WalletPayment(
                 tokenize_card=params.tokenize_card
             ),
-            hooks=Hooks(
+            hooks=request.Hooks(
                 web_hook_gateway=self.web_hook_gateway,
                 success_redirect_gateway=self.success_redirect_gateway,
                 error_redirect_gateway=self.error_redirect_gateway
@@ -90,13 +67,13 @@ class PayzeAccount2CardAPI:
             json_data=json_data,
         )
 
-        return ResponseAddCard(**resp)
+        return response.ResponseAddCard(**resp)
 
-    def verify_card(self, params: VerifyCardDataParam) -> ResponseVerifyCard:
+    def verify_card(self, params: params_classes.VerifyCardDataParam) -> response.ResponseVerifyCard:
         """
         that's used for verify card token.
         """
-        json_data = RequestVerifyCardData(
+        json_data = request.RequestVerifyCardData(
             number=params.number,
             card_holder=params.card_holder,
             expire_date=params.expire_date,
@@ -109,13 +86,13 @@ class PayzeAccount2CardAPI:
             data=json_data
         )
 
-        return ResponseVerifyCard(**resp)
+        return response.ResponseVerifyCard(**resp)
 
-    def account2card(self, params: RefundParam):
+    def account2card(self, params: params_classes.RefundParam):
         """
-        that's used accound2card method (refund)
+        that's used account2card method (refund)
         """
-        json_data = RequestRefund(
+        json_data = request.RequestRefund(
             source=params.source,
             amount=params.amount,
             language=params.language,
@@ -123,7 +100,7 @@ class PayzeAccount2CardAPI:
             token=params.token,
             idempotency_key=params.idempotency_key,
             extra_attributes=params.extra_attributes,
-            hooks=Hooks(
+            hooks=request.Hooks(
                 web_hook_gateway=self.web_hook_gateway,
                 success_redirect_gateway=self.success_redirect_gateway,
                 error_redirect_gateway=self.error_redirect_gateway
@@ -135,21 +112,21 @@ class PayzeAccount2CardAPI:
             json_data=json_data
         )
     
-        return ResponseRefund(**resp)
+        return response.ResponseRefund(**resp)
 
-    def status_check(self, params: StatusCheckParam) -> ResponseStatusCheck:
+    def status_check(self, params: params_classes.StatusCheckParam) -> response.ResponseStatusCheck:
         """
         check transition status.
         """
         self.url = self.url + "/query/token-based"
 
-        params = RequestStatusCheck(
+        params = request.RequestStatusCheck(
             check_id=params.check_id
         ).to_query_param()
 
-        resp = self.__send_request(
+        resp = self._send_request(
             method="GET",
             params=params
         )
 
-        return ResponseStatusCheck(**resp)
+        return response.ResponseStatusCheck(**resp)

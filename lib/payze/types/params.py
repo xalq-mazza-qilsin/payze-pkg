@@ -32,7 +32,7 @@ class AddCardDataParam:
     verifyCardData represents.
     """
     source: str
-    amount: str
+    amount: float
     currency: str
     language: str
     tokenize_card: bool

@@ -1,12 +1,9 @@
 """
 the payze responses.
 """
-from typing import Any
-from typing import List
-from typing import Optional
+from typing import Any, List, Optional
 
-from pydantic import Field
-from pydantic import BaseModel
+from pydantic import Field, BaseModel
 
 
 class CardPayment(BaseModel):
